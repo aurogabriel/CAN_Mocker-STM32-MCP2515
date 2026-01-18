@@ -9,7 +9,7 @@
 #define APPLICATION_USER_INC_MCP2515_H_
 
 #include <stdint.h>
-#include <stm32f4xx_hal.h>
+#include <stm32g4xx_hal.h>
 #include <string.h> 
 
 typedef unsigned char __u8;
