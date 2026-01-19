@@ -59,6 +59,7 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define MCP2515_INT_Pin GPIO_PIN_0
 #define MCP2515_INT_GPIO_Port GPIOA
+#define MCP2515_INT_EXTI_IRQn EXTI0_1_IRQn
 #define MCP2515_CS_Pin GPIO_PIN_3
 #define MCP2515_CS_GPIO_Port GPIOA
 #define HB_LED_Pin GPIO_PIN_4

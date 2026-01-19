@@ -54,6 +54,7 @@ volatile uint8_t can_received_flag = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -93,6 +94,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SPI1_Init();
+
+  /* Initialize interrupts */
+  MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
   // 1. Vincular o handle da SPI (verifique se é &hspi1 ou &hspi2 no seu CubeMX)
   mcp2515.spi_handle = &hspi1;
@@ -110,7 +114,7 @@ int main(void)
 	  MCP_setMode(&mcp2515, MODE_NORMAL);
   }
 
-	HAL_GPIO_WritePin(HB_LED_GPIO_Port, HB_LED_Pin, 0);
+	HAL_GPIO_WritePin(HB_LED_GPIO_Port, HB_LED_Pin, GPIO_PIN_RESET);
 
   /* USER CODE END 2 */
 
@@ -121,25 +125,25 @@ int main(void)
 
 	  // 1. Verifica se o MCP2515 tem alguma mensagem no buffer de entrada
 	// A função MCP_checkReceive retorna 1 se houver dados
-	if (MCP_readMessage(&mcp2515, &RxFrame) == ERROR_OK)
-	{
-		// 2. Se chegou mensagem, vamos preparar a resposta (ACK)
-		// Vamos responder com o ID da mensagem recebida + 1
-		TxFrame.can_id = RxFrame.can_id + 1;
-		TxFrame.can_dlc = 2;
-		TxFrame.data[0] = 0x4F; // 'O' em ASCII
-		TxFrame.data[1] = 0x4B; // 'K' em ASCII
+	  if (can_received_flag) // Só entra aqui se o Callback disparar
+		  {
+			  can_received_flag = 0;
 
-		// 3. Envia a confirmação de volta
-		MCP_sendMessage(&mcp2515, &TxFrame);
+			  // Ler a mensagem limpa o flag RXnIF no MCP2515 e libera o pino INT
+			  if (MCP_readMessage(&mcp2515, &RxFrame) == ERROR_OK)
+			  {
+				  TxFrame.can_id = RxFrame.can_id + 1;
+				  TxFrame.can_dlc = 2;
+				  TxFrame.data[0] = 0x4F;
+				  TxFrame.data[1] = 0x4B;
+				  MCP_sendMessage(&mcp2515, &TxFrame);
+				  HAL_GPIO_TogglePin(HB_LED_GPIO_Port, HB_LED_Pin);
+			  }
 
-		// Opcional: Piscar um LED para diagnóstico visual
-		HAL_GPIO_TogglePin(HB_LED_GPIO_Port, HB_LED_Pin);
-	}
 
-	// Pequeno delay para não sobrecarregar a SPI,
-	// mas curto o suficiente para não perder mensagens (1ms está ótimo)
-	HAL_Delay(1);
+		  }
+
+	  HAL_Delay(1);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -189,14 +193,28 @@ void SystemClock_Config(void)
   }
 }
 
+/**
+  * @brief NVIC Configuration.
+  * @retval None
+  */
+static void MX_NVIC_Init(void)
+{
+  /* EXTI0_1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(EXTI0_1_IRQn, 1, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
+}
+
 /* USER CODE BEGIN 4 */
 
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+void HAL_GPIO_EXTI_Falling_Callback(uint16_t GPIO_Pin)
 {
     // Verifique se a interrupção veio do pino conectado ao INT do MCP
     if (GPIO_Pin == MCP2515_INT_Pin) // Substitua pelo nome do seu pino
     {
-//        can_received_flag = 1;
+
+        can_received_flag = 1;
+//		HAL_GPIO_TogglePin(HB_LED_GPIO_Port, HB_LED_Pin);
+
     }
 //	HAL_GPIO_TogglePin(HB_LED_GPIO_Port, HB_LED_Pin);
 //	HAL_Delay(1000);
