@@ -139,8 +139,6 @@ int main(void)
 				  MCP_sendMessage(&mcp2515, &TxFrame);
 				  HAL_GPIO_TogglePin(HB_LED_GPIO_Port, HB_LED_Pin);
 			  }
-
-
 		  }
 
 	  HAL_Delay(1);
