@@ -1,0 +1,6 @@
+G030-MCP2515/Debug/
+G030-MCP2515/Release/
+G030-MCP2515/.settings/
+*.elf
+*.bin
+*.hex
