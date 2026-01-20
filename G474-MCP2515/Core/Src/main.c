@@ -20,11 +20,17 @@
 #include "main.h"
 #include "hrtim.h"
 #include "spi.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "mcp2515.h"
+
+#include "usbd_cdc_if.h"
+#include <stdio.h>
+#include <stdarg.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,7 +80,24 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/* Em USER CODE BEGIN 4 */
+void USB_Log(const char *fmt, ...) {
+    static char buf[512]; // Buffer estático para economizar pilha
+    va_list args;
+    va_start(args, fmt);
+    int len = vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
 
+    if (len > 0) {
+        uint8_t result;
+        uint32_t timeout = 100; // Timeout de segurança para não travar o MCU
+
+        do {
+            result = CDC_Transmit_FS((uint8_t*)buf, len);
+            timeout--;
+        } while (result == USBD_BUSY && timeout > 0);
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -108,6 +131,7 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_HRTIM1_Init();
+  MX_USB_Device_Init();
   /* USER CODE BEGIN 2 */
   // 1. Vincular o handle da SPI (verifique se é &hspi1 ou &hspi2 no seu CubeMX)
   mcp2515.spi_handle = &hspi1;
@@ -176,7 +200,9 @@ int main(void)
 	          }
 	      }
 
-
+	      uint32_t tick = HAL_GetTick();
+		  USB_Log("[DEBUG] Sistema rodando. Tick: %lu\r\n", tick);
+		  HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -206,9 +232,9 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
-  RCC_OscInitStruct.PLL.PLLN = 13;
+  RCC_OscInitStruct.PLL.PLLN = 18;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV4;
+  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV6;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -222,9 +248,9 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     Error_Handler();
   }

@@ -4,3 +4,4 @@ G030-MCP2515/.settings/
 *.elf
 *.bin
 *.hex
+.vscode/
