@@ -7,3 +7,9 @@
 ../Core/Src/stm32g4xx_it.c:157:6:DebugMon_Handler	4	static
 ../Core/Src/stm32g4xx_it.c:170:6:PendSV_Handler	4	static
 ../Core/Src/stm32g4xx_it.c:183:6:SysTick_Handler	8	static
+<<<<<<< Updated upstream
+=======
+../Core/Src/stm32g4xx_it.c:204:6:EXTI0_IRQHandler	8	static
+../Core/Src/stm32g4xx_it.c:218:6:USB_HP_IRQHandler	8	static
+../Core/Src/stm32g4xx_it.c:232:6:USB_LP_IRQHandler	8	static
+>>>>>>> Stashed changes

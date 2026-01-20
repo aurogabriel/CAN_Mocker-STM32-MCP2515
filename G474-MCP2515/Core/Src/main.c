@@ -19,11 +19,18 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "spi.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "mcp2515.h"
+
+#include "usbd_cdc_if.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <string.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -57,7 +64,24 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/* Em USER CODE BEGIN 4 */
+void USB_Log(const char *fmt, ...) {
+    static char buf[512]; // Buffer estático para economizar pilha
+    va_list args;
+    va_start(args, fmt);
+    int len = vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
 
+    if (len > 0) {
+        uint8_t result;
+        uint32_t timeout = 100; // Timeout de segurança para não travar o MCU
+
+        do {
+            result = CDC_Transmit_FS((uint8_t*)buf, len);
+            timeout--;
+        } while (result == USBD_BUSY && timeout > 0);
+    }
+}
 /* USER CODE END 0 */
 
 /**
@@ -90,6 +114,11 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SPI1_Init();
+<<<<<<< Updated upstream
+=======
+  MX_HRTIM1_Init();
+  MX_USB_Device_Init();
+>>>>>>> Stashed changes
   /* USER CODE BEGIN 2 */
   // 1. Vincular o handle da SPI (verifique se é &hspi1 ou &hspi2 no seu CubeMX)
   mcp2515.spi_handle = &hspi1;
@@ -117,7 +146,45 @@ int main(void)
 	  TxFrame.can_dlc = 8;
 	  for(int i=0; i<8; i++) TxFrame.data[i] = i;
 
+<<<<<<< Updated upstream
 	  MCP_sendMessage(&mcp2515, &TxFrame);
+=======
+	          // CAPTURA O TEMPO DE INÍCIO (Ticks do HRTIM)
+	          t_start = HRTIM1->sTimerxRegs[HRTIM_TIMERINDEX_TIMER_A].CNTxR;
+
+	          if(MCP_sendMessage(&mcp2515, &TxFrame) == ERROR_OK) {
+	              last_ping_tick = HAL_GetTick();
+	          }
+	      }
+
+	      // 2. Recepção do Pong (G030 -> G474)
+	      if (can_received_flag) {
+	          can_received_flag = 0;
+	          if (MCP_readMessage(&mcp2515, &RxFrame) == ERROR_OK) {
+	              if (RxFrame.can_id == 0x124) {
+	                  // CAPTURA O TEMPO DE CHEGADA
+	                  uint32_t t_end = HRTIM1->sTimerxRegs[HRTIM_TIMERINDEX_TIMER_A].CNTxR;
+
+	                  // Trata o overflow do timer (16-bit)
+	                  uint32_t diff = (t_end >= t_start) ? (t_end - t_start) : (0xFFFF - t_start + t_end);
+
+	                  // CALCULA LATÊNCIA E JITTER
+	                  latency_us = (float)diff / TICKS_PER_US;
+
+	                  if (last_latency > 0) {
+	                      float current_jitter = latency_us - last_latency;
+	                      jitter_us = (current_jitter < 0) ? -current_jitter : current_jitter;
+	                  }
+
+	                  last_latency = latency_us;
+	                  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	              }
+	          }
+	      }
+	      uint32_t tick = HAL_GetTick();
+		  USB_Log("[DEBUG] Sistema rodando. Tick: %lu\r\n", tick);
+		  HAL_Delay(1000);
+>>>>>>> Stashed changes
 
 	  // Exemplo: Ler se chegou algo
 	  if (MCP_readMessage(&mcp2515, &RxFrame) == ERROR_OK) {
@@ -151,7 +218,17 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+<<<<<<< Updated upstream
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+=======
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
+  RCC_OscInitStruct.PLL.PLLN = 18;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV6;
+  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+>>>>>>> Stashed changes
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -166,7 +243,11 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
+<<<<<<< Updated upstream
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+=======
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+>>>>>>> Stashed changes
   {
     Error_Handler();
   }

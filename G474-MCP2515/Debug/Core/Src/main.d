@@ -22,12 +22,33 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ramfunc.h \
+<<<<<<< Updated upstream
+=======
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_hrtim.h \
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pcd.h \
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_usb.h \
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pcd_ex.h \
+>>>>>>> Stashed changes
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_spi.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_spi_ex.h \
+<<<<<<< Updated upstream
  ../Core/Inc/spi.h ../Core/Inc/main.h ../Core/Inc/gpio.h \
  ../Core/Inc/mcp2515.h
+=======
+ ../Core/Inc/hrtim.h ../Core/Inc/main.h ../Core/Inc/spi.h \
+ ../USB_Device/App/usb_device.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
+ ../USB_Device/Target/usbd_conf.h ../Core/Inc/gpio.h \
+ ../Core/Inc/mcp2515.h ../USB_Device/App/usbd_cdc_if.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
+ ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
+>>>>>>> Stashed changes
 ../Core/Inc/main.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:
 ../Core/Inc/stm32g4xx_hal_conf.h:
@@ -52,11 +73,31 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ramfunc.h:
+<<<<<<< Updated upstream
+=======
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_hrtim.h:
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pcd.h:
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_usb.h:
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pcd_ex.h:
+>>>>>>> Stashed changes
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_spi.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_spi_ex.h:
 ../Core/Inc/spi.h:
+<<<<<<< Updated upstream
 ../Core/Inc/main.h:
+=======
+../USB_Device/App/usb_device.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
+../USB_Device/Target/usbd_conf.h:
+>>>>>>> Stashed changes
 ../Core/Inc/gpio.h:
 ../Core/Inc/mcp2515.h:
+../USB_Device/App/usbd_cdc_if.h:
+../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
+../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:

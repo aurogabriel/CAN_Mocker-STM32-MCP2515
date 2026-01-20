@@ -22,6 +22,13 @@ Core/Src/system_stm32g4xx.o: ../Core/Src/system_stm32g4xx.c \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ramfunc.h \
+<<<<<<< Updated upstream
+=======
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_hrtim.h \
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pcd.h \
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_usb.h \
+ ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pcd_ex.h \
+>>>>>>> Stashed changes
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_spi.h \
@@ -49,6 +56,13 @@ Core/Src/system_stm32g4xx.o: ../Core/Src/system_stm32g4xx.c \
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ramfunc.h:
+<<<<<<< Updated upstream
+=======
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_hrtim.h:
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pcd.h:
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_usb.h:
+../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pcd_ex.h:
+>>>>>>> Stashed changes
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_spi.h:
