@@ -534,5 +534,10 @@ void MCP_clearRXnOVR(mcp2515_t *mcp2515);//
 void MCP_clearMERR(mcp2515_t *mcp2515);//
 void MCP_clearERRIF(mcp2515_t *mcp2515);//
 
+void setRegister(mcp2515_t *mcp2515, uint8_t reg, uint8_t value);
+void modifyRegister(mcp2515_t *mcp2515, uint8_t reg, uint8_t mask, uint8_t data);
+uint8_t readRegister(mcp2515_t *mcp2515, uint8_t reg);
+
+
 #endif /* APPLICATION_USER_INC_MCP2515_H_ */
 

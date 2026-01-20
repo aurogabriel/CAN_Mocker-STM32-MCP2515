@@ -125,23 +125,43 @@ int main(void)
 
 	  // 1. Verifica se o MCP2515 tem alguma mensagem no buffer de entrada
 	// A função MCP_checkReceive retorna 1 se houver dados
-	  if (can_received_flag) // Só entra aqui se o Callback disparar
-		  {
-			  can_received_flag = 0;
+	  if (can_received_flag)
+	      {
+	          can_received_flag = 0;
+	          if (MCP_readMessage(&mcp2515, &RxFrame) == ERROR_OK)
+	          {
+	              if (RxFrame.can_id == 0x123)
+	              {
+	                  TxFrame.can_id = 0x124;
+	                  TxFrame.data[0] = 0x4F; // 'O'
+	                  TxFrame.data[1] = 0x4B; // 'K'
+	                  MCP_sendMessage(&mcp2515, &TxFrame);
+         }
+	          }
+	      }
 
-			  // Ler a mensagem limpa o flag RXnIF no MCP2515 e libera o pino INT
-			  if (MCP_readMessage(&mcp2515, &RxFrame) == ERROR_OK)
-			  {
-				  TxFrame.can_id = RxFrame.can_id + 1;
-				  TxFrame.can_dlc = 2;
-				  TxFrame.data[0] = 0x4F;
-				  TxFrame.data[1] = 0x4B;
-				  MCP_sendMessage(&mcp2515, &TxFrame);
-				  HAL_GPIO_TogglePin(HB_LED_GPIO_Port, HB_LED_Pin);
-			  }
-		  }
 
-	  HAL_Delay(1);
+//
+//	  if (MCP_readMessage(&mcp2515, &RxFrame) == ERROR_OK)
+//	      {
+//	          // Se recebeu o PING legítimo do G474
+//	          if (RxFrame.can_id == 0x123)
+//	          {
+//	              // Pisca o LED indicando: "Comunicação OK"
+//	              HAL_GPIO_WritePin(HB_LED_GPIO_Port, HB_LED_Pin, GPIO_PIN_SET);
+//	              HAL_Delay(50); // Deixa o LED aceso tempo suficiente para o olho ver
+//	              HAL_GPIO_WritePin(HB_LED_GPIO_Port, HB_LED_Pin, GPIO_PIN_RESET);
+//
+//	              // Envia o PONG de volta
+//	              TxFrame.can_id = 0x124;
+//	              TxFrame.can_dlc = 2;
+//	              TxFrame.data[0] = 'O'; TxFrame.data[1] = 'K';
+//	              MCP_sendMessage(&mcp2515, &TxFrame);
+//	          }
+//	          // Se recebeu o ID do Babbling Idiot (0x000), NÃO faz nada com o LED.
+//	          // O silêncio do LED provará que o Ping legítimo não está chegando.
+//	      }
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -171,7 +191,12 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSIDiv = RCC_HSI_DIV1;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
+  RCC_OscInitStruct.PLL.PLLN = 10;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -181,8 +206,8 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV2;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
